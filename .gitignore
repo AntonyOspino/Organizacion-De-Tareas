@@ -1,0 +1,6 @@
+# Ignorar archivos con credenciales
+config.js
+
+# Ignorar archivos de sistema
+.DS_Store
+thumbs.db
