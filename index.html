@@ -1,75 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=LFB02ASKjxl3&format=png&color=000000">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://img.icons8.com/?size=100&id=LFB02ASKjxl3&format=png&color=000000"
+    />
+    <link rel="stylesheet" href="style.css" />
     <title>Gestor de Tareas</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Gestor de Tareas</h1>
-        <div class="header-controls">
-            <select id="filtro">
-                <option value="Todos">Todos</option>
-                <option value="Trabajo">Trabajo</option>
-                <option value="Estudio">Estudio</option>
-                <option value="Personal">Personal</option>
-            </select>
-            <button id="historialBtn">Historial</button>
-        </div>
+      <h1>Gestor de Tareas</h1>
+      <div class="header-controls">
+        <select id="filtro">
+          <option value="Todos">Todos</option>
+          <option value="Trabajo">Trabajo</option>
+          <option value="Estudio">Estudio</option>
+          <option value="Personal">Personal</option>
+        </select>
+        <button id="historialBtn">Historial</button>
+      </div>
     </header>
     <section id="tarjetas-container">
-        <h2 id="tareas-guardadas">¡Bienvenido(a) a Tu Gestor De Tareas Personalisado!</h2>
-        <ul id="lista-tareas">
-            <!-- Aquí se agregarán dinámicamente las tareas desde JS -->
-        </ul>
+      <h2 id="tareas-guardadas">
+        ¡Bienvenido(a) a Tu Gestor De Tareas Personalisado!
+      </h2>
+      <ul id="lista-tareas">
+        <!-- Aquí se agregarán dinámicamente las tareas desde JS -->
+      </ul>
     </section>
     <!-- Botón flotante -->
     <button id="btnAgregarTarea" class="boton-flotante">+</button>
     <!-- Modal para mostrar registros -->
     <div id="modalHistorial" class="modal">
-        <div class="modal-contenido">
-            <span id="cerrarModal">&times;</span>
-            <h2>Historial de Registros</h2>
-            <ul id="lista-registros"></ul>
-            <button id="btnImprimir">🖨️ Imprimir Historial</button>
-        </div>
+      <div class="modal-contenido">
+        <span id="cerrarModal">&times;</span>
+        <h2>Historial de Registros</h2>
+        <ul id="lista-registros"></ul>
+        <button id="btnImprimir">🖨️ Imprimir Historial</button>
+      </div>
     </div>
     <!-- Modal para agregar tareas -->
     <div id="modalAgregar" class="modal">
-        <div class="modal-contenido">
-            <span id="cerrarModalAgregar">&times;</span>
-            <h2>Agregar Nueva Tarea</h2>
-            <form id="formAgregarTarea">
-                <label for="titulo" class="titulo">Título:</label>
-                <input type="text" id="titulo" name="titulo" required>
-                <label for="categoria">Categoría:</label>
-                <select id="categoria" name="categoria">
-                    <option value="Trabajo">Trabajo</option>
-                    <option value="Estudio">Estudio</option>
-                    <option value="Personal">Personal</option>
-                </select>
-                <label for="descripcion">Descripción:</label>
-                <textarea id="descripcion" name="descripcion"></textarea>
-                <label for="recordatorio">Fecha De Recordatorio</label>
-                <input type="datetime-local" id="recordatorio" name="recordatorio"> 
-                <button type="submit">Guardar Tarea</button>
-            </form>
-        </div>
+      <div class="modal-contenido">
+        <span id="cerrarModalAgregar">&times;</span>
+        <h2>Agregar Nueva Tarea</h2>
+        <form id="formAgregarTarea">
+          <label for="titulo" class="titulo">Título:</label>
+          <input type="text" id="titulo" name="titulo" required />
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" name="categoria">
+            <option value="Trabajo">Trabajo</option>
+            <option value="Estudio">Estudio</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <label for="descripcion">Descripción:</label>
+          <textarea id="descripcion" name="descripcion"></textarea>
+          <label for="recordatorio">Fecha De Recordatorio</label>
+          <input type="datetime-local" id="recordatorio" name="recordatorio" />
+          <button type="submit">Guardar Tarea</button>
+        </form>
+      </div>
     </div>
     <!-- Modal de confirmación para eliminar tarea -->
     <div id="modalConfirmacion" class="modal">
-        <div class="modal-contenido">
-            <h2>¿Confirmar eliminación?</h2>
-            <p>¿Está seguro de que quiere eliminar esta tarea?</p>
-            <button id="btnCancelar">Cancelar</button>
-            <button id="btnConfirmar">Confirmar</button>
-        </div>
+      <div class="modal-contenido">
+        <h2>¿Confirmar eliminación?</h2>
+        <p>¿Está seguro de que quiere eliminar esta tarea?</p>
+        <button id="btnCancelar">Cancelar</button>
+        <button id="btnConfirmar">Confirmar</button>
+      </div>
+    </div>
+    <!-- Modal de confirmación para completar tarea -->
+    <div id="modalConfirmacionCompletado" class="modal">
+      <div class="modal-contenido">
+        <h2>¿Confirmar completado?</h2>
+        <p>¿Está seguro de que quiere marcar esta tarea como completada?</p>
+        <button id="btnCancelarCompletado">Cancelar</button>
+        <button id="btnConfirmarCompletado">Confirmar</button>
+      </div>
     </div>
     <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script type="module" src="/main.js"></script>
-</body>
+  </body>
 </html>

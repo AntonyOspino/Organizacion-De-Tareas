@@ -77,6 +77,11 @@ select:focus {
     background-color: #e6e6e6;
 }
 
+#tareas-guardadas{
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
 /* Ajustar el contenido debajo del header */
 #tarjetas-container {
     margin-top: 80px; /* Para evitar que el contenido quede debajo de la barra */
@@ -126,7 +131,7 @@ select:focus {
     color: white;
 }
 
-.btn-eliminar:hover {
+.btn-eliminar:hover , #btnCancelarCompletado{
     background-color: #c82333;
     transform: scale(1.05);
 }
@@ -139,7 +144,15 @@ select:focus {
     margin-bottom: 10px;
 }
 
-#modalConfirmacion .modal-contenido p {
+#modalConfirmacionCompletado .modal-contenido h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #28a745; /* Verde */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#modalConfirmacion .modal-contenido p , #modalConfirmacionCompletado .modal-contenido p{
     font-size: 16px;
     color: #333; /* Color oscuro para mejor legibilidad */
     text-align: center;
@@ -147,26 +160,26 @@ select:focus {
 }
 
 
-#btnCancelar, #btnConfirmar {
+#btnCancelar, #btnConfirmar, #btnCancelarCompletado, #btnConfirmarCompletado {
     padding: 12px 18px;
     font-size: 14px;
     font-weight: bold;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: transform 0.2s ease , background-color 0.3s ease;
     margin: 10px;
 }
 
 /* Botón "Cancelar" */
-#btnCancelar {
+#btnCancelar , #btnCancelarCompletado{
     background-color: #6c757d; /* Gris neutro */
     color: white;
 }
 
-#btnCancelar:hover {
+#btnCancelar:hover, #btnCancelarCompletado:hover{
     background-color: #5a6268;
-    transform: scale(1.05); /* Efecto ligero al pasar el mouse */
+    transform: scale(1.1); /* Efecto ligero al pasar el mouse */
 }
 
 /* Botón "Confirmar" */
@@ -177,7 +190,17 @@ select:focus {
 
 #btnConfirmar:hover {
     background-color: #c82333;
-    transform: scale(1.05); /* Efecto ligero al pasar el mouse */
+    transform: scale(1.1); /* Efecto ligero al pasar el mouse */
+}
+
+#btnConfirmarCompletado {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+#btnConfirmarCompletado:hover {
+    background-color: #218838;
+    transform: scale(1.1); /* Pequeña animación */
 }
 
 

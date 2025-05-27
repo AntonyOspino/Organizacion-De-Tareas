@@ -4,6 +4,21 @@ import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
 // Create a single supabase client for interacting with your database
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+///////////////////////////////////////////////////////*/
+if ("Notification" in window) {
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      console.log("Notificaciones habilitadas");
+      iniciarVerificacionRecordatorios(); // Solo iniciar si el usuario acepta permisos
+    } else {
+      console.warn("Permiso de notificaciones denegado.");
+    }
+  });
+}
+
+
+//////////////////////////////////////////////////////*/
+
 // Capturar el boton de historial de registros
 const historialBtn = document.getElementById("historialBtn");
 const modalHistorial = document.getElementById("modalHistorial");
@@ -29,6 +44,14 @@ const filtroSelect = document.getElementById("filtro");
 const modalConfirmacion = document.getElementById("modalConfirmacion");
 const btnCancelar = document.getElementById("btnCancelar");
 const btnConfirmar = document.getElementById("btnConfirmar");
+
+const modalConfirmacionCompletado = document.getElementById(
+  "modalConfirmacionCompletado"
+);
+const btnCancelarCompletado = document.getElementById("btnCancelarCompletado");
+const btnConfirmarCompletado = document.getElementById(
+  "btnConfirmarCompletado"
+);
 
 ///////////////////////////////////////////////////////////////////////////////////***/
 
@@ -73,23 +96,41 @@ filtroSelect.addEventListener("change", () => {
   obtenerTareas(categoriaSeleccionada);
 });
 
+let tareaACompletar = null; // Variable para almacenar la tarea seleccionada
+
 // Detectar clic en el botón "Completado"
-document.addEventListener("click", async (event) => {
+document.addEventListener("click", (event) => {
   if (event.target.classList.contains("btn-completado")) {
-    const tareaId = event.target.getAttribute("data-id");
-
-    // Actualizar la tarea en Supabase
-    const { error } = await supabase
-      .from("tareas")
-      .update({ status: "completado" })
-      .eq("id", tareaId);
-
-    if (error) {
-      console.error("Error al marcar como completado:", error);
-    } else {
-      obtenerTareas(); // Refrescar lista de tareas
-    }
+    tareaACompletar = event.target.getAttribute("data-id"); // Guardar el ID de la tarea
+    modalConfirmacionCompletado.style.display = "flex"; // Mostrar el modal
   }
+});
+
+btnCancelarCompletado.addEventListener("click", () => {
+  tareaACompletar = null; // Resetear la variable
+  modalConfirmacionCompletado.style.display = "none";
+});
+
+btnConfirmarCompletado.addEventListener("click", async () => {
+  if (!tareaACompletar) {
+    alert("Tarea no seleccionada");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("tareas")
+    .update({ status: "completado" })
+    .eq("id", tareaACompletar);
+
+  if (error) {
+    console.error("Error al marcar como completado:", error);
+  } else {
+    console.log(`tarea con data-id ${tareaACompletar} completada`);
+    obtenerTareas(); // Refrescar lista de tareas
+  }
+
+  modalConfirmacionCompletado.style.display = "none"; // Ocultar modal
+  tareaACompletar = null; // Resetear la variable
 });
 
 let tareaAEliminar = null; // Variable para almacenar la tarea seleccionada
@@ -227,24 +268,22 @@ async function eliminarTarea(id) {
     return;
   }
 
-  alert("Tarea Eliminada");
+  console.log(`Tarea con id:${id} eliminada`);
   obtenerTareas(); // Refrescar lista de tareas después de eliminar
   modalConfirmacion.style.display = "none"; // Ocultar modal
   tareaAEliminar = null; // Resetear la variable
 }
 
 async function insertarTarea(titulo, categoria, descripcion, recordatorio) {
-  const { error } = await supabase
-    .from("tareas")
-    .insert([
-      {
-        title: titulo,
-        category: categoria,
-        description: descripcion,
-        status: "pendiente",
-        reminder_at: recordatorio,
-      },
-    ]);
+  const { error } = await supabase.from("tareas").insert([
+    {
+      title: titulo,
+      category: categoria,
+      description: descripcion,
+      status: "pendiente",
+      reminder_at: recordatorio,
+    },
+  ]);
 
   if (error) {
     console.error("Error al insertar tarea:", error);
@@ -257,25 +296,55 @@ async function insertarTarea(titulo, categoria, descripcion, recordatorio) {
   obtenerTareas();
 }
 
+// function formatData(dateString) {
+//   // Extraer solo la fecha y la hora sin cambiar la zona horaria
+//   const date = new Date(dateString);
+
+//   // Obtener fecha en formato "DD/MM/YYYY"
+//   const formattedDate = date
+//     .toISOString()
+//     .split("T")[0]
+//     .split("-")
+//     .reverse()
+//     .join("/");
+
+//   // Extraer la hora correctamente sin alterar UTC
+//   let [hours, minutes] = dateString.split("T")[1].split(":"); // Obtiene las horas y minutos directamente
+//   const period = hours < 12 ? "AM" : "PM";
+//   hours = hours % 12 || 12; // Convertir a formato de 12 horas
+
+//   return `${formattedDate} ${hours}:${minutes} ${period}`;
+// }
+
 function formatData(dateString) {
-  // Extraer solo la fecha y la hora sin cambiar la zona horaria
-  const date = new Date(dateString);
+    // Validar que dateString no sea undefined o null
+    if (!dateString) {
+        console.error("Error en formatData: dateString es undefined o null.");
+        return "Fecha inválida"; // Evitar que falle la ejecución
+    }
 
-  // Obtener fecha en formato "DD/MM/YYYY"
-  const formattedDate = date
-    .toISOString()
-    .split("T")[0]
-    .split("-")
-    .reverse()
-    .join("/");
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+        console.error("Error en formatData: dateString no es una fecha válida.");
+        return "Fecha inválida";
+    }
 
-  // Extraer la hora correctamente sin alterar UTC
-  let [hours, minutes] = dateString.split("T")[1].split(":"); // Obtiene las horas y minutos directamente
-  const period = hours < 12 ? "AM" : "PM";
-  hours = hours % 12 || 12; // Convertir a formato de 12 horas
+    // Obtener fecha en formato "DD/MM/YYYY"
+    const formattedDate = date
+        .toISOString()
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("/");
 
-  return `${formattedDate} ${hours}:${minutes} ${period}`;
+    // Extraer la hora correctamente sin alterar UTC
+    let [hours, minutes] = dateString.split("T")[1].split(":"); // Obtener horas y minutos
+    const period = hours < 12 ? "AM" : "PM";
+    hours = hours % 12 || 12; // Convertir a formato de 12 horas
+
+    return `${formattedDate} ${hours}:${minutes} ${period}`;
 }
+
 
 function convertirFechaUTCColombia(fechaUTC) {
   const date = new Date(fechaUTC);
@@ -300,6 +369,67 @@ function convertirFechaUTCColombia(fechaUTC) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////***/
+function iniciarVerificacionRecordatorios() {
+  setInterval(verificarRecordatorios, 15000); // Ejecutar cada minuto
+}
+
+async function verificarRecordatorios() {
+    const { data, error } = await supabase
+        .from("tareas")
+        .select("title, reminder_at");
+
+    if (error) {
+        console.error("Error al obtener tareas:", error);
+        return;
+    }
+
+    // Obtener la hora actual en Colombia ajustando manualmente la diferencia de UTC
+    const ahoraRaw = new Date();
+    ahoraRaw.setMinutes(ahoraRaw.getMinutes() - ahoraRaw.getTimezoneOffset()); // Ajuste UTC correcto
+    const ahora = formatData(ahoraRaw.toISOString());
+
+    console.log(`Verificando recordatorios: ${ahora}`); // Debug
+
+    data.forEach(tarea => {
+        if (!tarea.reminder_at) {
+            console.warn(`Tarea sin reminder_at: ${tarea.title}`);
+            return;
+        }
+
+        // Usar tu función formatData() con la fecha almacenada en Supabase
+        const reminderLocal = formatData(tarea.reminder_at);
+
+        console.log(`Comparando: ${reminderLocal} con ${ahora}`);
+
+        if (reminderLocal === ahora) {
+            mostrarNotificacion(tarea.title);
+        }
+    });
+}
+
+function mostrarNotificacion(titulo) {
+    if (Notification.permission === "granted") {
+        try {
+            const notificacion = new Notification("Recordatorio de Tarea", {
+                body: `Tienes que realizar la tarea: ${titulo}`,
+                requireInteraction: true, // Mantiene la notificación visible hasta que el usuario la cierre
+            });
+
+            notificacion.onshow = () => console.log("✅ Notificación mostrada correctamente.");
+            notificacion.onerror = () => console.error("❌ Error al mostrar la notificación.");
+        } catch (error) {
+            console.error("Excepción en notificación:", error);
+        }
+    } else {
+        console.warn("No se tiene permiso para mostrar notificaciones.");
+    }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////***/
 
 // Llamar a la función para cargar tareas al iniciar la página
 obtenerTareas();
+console.log("Soporte de Notificación:", "Notification" in window);
+console.log("Permiso de notificación:", Notification.permission);
