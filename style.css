@@ -26,7 +26,7 @@ header {
     position: fixed; /* Mantiene la barra fija arriba */
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 20;
 }
 
 /* Título */
@@ -78,15 +78,22 @@ select:focus {
 }
 
 #tareas-guardadas{
-    margin-top: 20px;
-    padding-top: 20px;
+    /* margin-top: 20px;
+    padding-top: 20px; */
+    position: sticky;
+    top: 60px; /* Ajusta según la altura del header */
+    z-index: 10; /* Asegura que el h2 esté por encima de otros elementos */
+    background: white; /* Evita que se mezcle con otros elementos */
+    padding: 20px;
+    border-radius: 12px;
 }
 
 /* Ajustar el contenido debajo del header */
 #tarjetas-container {
-    margin-top: 80px; /* Para evitar que el contenido quede debajo de la barra */
+    margin-top: 60px; /*Para evitar que el contenido quede debajo de la barra*/
     padding: 20px;
 }
+
 
 /* Estilo de cada tarea */
 #lista-tareas li {
@@ -242,6 +249,7 @@ select:focus {
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Mayor que el h2 */
 }
 
 /* Contenido del modal */

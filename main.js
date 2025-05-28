@@ -296,26 +296,6 @@ async function insertarTarea(titulo, categoria, descripcion, recordatorio) {
   obtenerTareas();
 }
 
-// function formatData(dateString) {
-//   // Extraer solo la fecha y la hora sin cambiar la zona horaria
-//   const date = new Date(dateString);
-
-//   // Obtener fecha en formato "DD/MM/YYYY"
-//   const formattedDate = date
-//     .toISOString()
-//     .split("T")[0]
-//     .split("-")
-//     .reverse()
-//     .join("/");
-
-//   // Extraer la hora correctamente sin alterar UTC
-//   let [hours, minutes] = dateString.split("T")[1].split(":"); // Obtiene las horas y minutos directamente
-//   const period = hours < 12 ? "AM" : "PM";
-//   hours = hours % 12 || 12; // Convertir a formato de 12 horas
-
-//   return `${formattedDate} ${hours}:${minutes} ${period}`;
-// }
-
 function formatData(dateString) {
     // Validar que dateString no sea undefined o null
     if (!dateString) {
