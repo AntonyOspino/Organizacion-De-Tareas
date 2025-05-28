@@ -15,7 +15,7 @@ Sistema de gestión de tareas con **recordatorios en tiempo real**, utilizando *
 Ejecuta en tu terminal:  
 
 ```bash
-https://github.com/AntonyOspino/Organizacion-De-Tareas.git
+git clone https://github.com/AntonyOspino/Organizacion-De-Tareas.git
 cd organizacion-de-tareas
 2️⃣ Configurar Supabase
 Crea un proyecto en Supabase
