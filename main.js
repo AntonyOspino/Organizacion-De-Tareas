@@ -350,7 +350,7 @@ function convertirFechaUTCColombia(fechaUTC) {
 
 /////////////////////////////////////////////////////////////////////////////////***/
 function iniciarVerificacionRecordatorios() {
-  setInterval(verificarRecordatorios, 15000); // Ejecutar cada minuto
+  setInterval(verificarRecordatorios, 55000); // Ejecutar cada 55 segs
 }
 
 async function verificarRecordatorios() {
